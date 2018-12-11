@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle color="dark">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Mens</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+  {{msg}}
+
+  <ion-card>
+      <ion-item>
+          <input type="file" (change)="enviaArquivo($event)"/>
+      </ion-item> 
+
+  </ion-card>
+  <ion-card>
+
+    <form [formGroup]="formGroup" (ngSubmit)="add()">
+      <ion-textarea formControlName="mensagem" placeholder="Sua mensagem"></ion-textarea>
+      <button ion-button block>Postar</button>
+    </form>
+
+  </ion-card>
+
+  <ion-card *ngFor="let msg of mensagens">
+
+    {{msg.mensagem}}
+
+    <img src="{{msg.imagem}}">
+    </ion-card>
+
+  </ion-content>
