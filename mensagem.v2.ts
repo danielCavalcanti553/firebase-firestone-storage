@@ -5,6 +5,7 @@ import { AngularFireStorage } from 'angularfire2/storage';
 import { FormBuilder,FormGroup, Validators } from '@angular/forms';
 
 import firebase from 'firebase';
+import { DatePipe } from '@angular/common';
 
 @IonicPage()
 @Component({
@@ -31,17 +32,44 @@ export class MensagemPage {
       
       this.firestore.settings(this.settings);
       // inicia o formulário
-      this.formGroup = this.formBuilder.group({    
-        usuario : ['', [Validators.required]],
-        mensagem: ['', [Validators.required]],
-        id : [''],
-        imagem : ['']
-      });
+      this.form();
 
+  }
+
+  form(){
+    this.formGroup = this.formBuilder.group({    
+      usuario : ['', [Validators.required]],
+      mensagem: ['', [Validators.required]],
+      id : [''],
+      imagem : [''],
+      data : [firebase.firestore.FieldValue.serverTimestamp()]
+    });
   }
 
   ionViewDidLoad() {
     
+    console.log(firebase.firestore.FieldValue.serverTimestamp());
+
+    
+    this.getList();
+  }
+
+  getList(){
+
+    var postRef = firebase.firestore()
+    .collection("mensagem").orderBy('data','desc');
+      // .orderBy("data", "desc");
+    postRef.get().then(query => {
+      query.forEach(doc => {
+        this.mensagens.push(doc.data());
+      });
+    });
+   
+  }
+
+  detalhe(id : string){
+    console.log(id);
+    this.navCtrl.push("MensagemDetalhePage",{'id' : id});
   }
 
   cadastrar(){
@@ -57,17 +85,11 @@ export class MensagemPage {
         // Sucesso
         console.log("Cadastrado com sucesso");
         console.log(ref.id);
-        this.add(ref.id)
-
-        
-
-
+        this.add(ref.id);
 
       }).catch(err => {
-
         console.log(err.message);
       });
-
   }
 
   enviaArquivo(event){
@@ -84,21 +106,20 @@ export class MensagemPage {
       // Se sucesso, pega a url para download da imagem
       caminho.getDownloadURL().then(url=>{
         // adicionar a url da imagem no form
-        //this.formGroup.controls['imagem'].setValue(this.msg = url);
+        // this.formGroup.controls['imagem'].setValue(this.msg = url);
         // Cadastra os dados no Firestone
         console.log("imagem enviada")
         this.firestore.collection("mensagem")
-          .doc(id).update({'imagem' : url});
+          .doc(id).update({'imagem' : url, 'id' : id}).then(() =>{
+            this.mensagens = [];
+            this.form();
+            this.getList();
+          });
       });
     }).catch(err => {
       //Houve algum erro
       this.msg = err.message;
     })
-  }
-  
-  detalhe(id : string){
-    console.log(id);
-    this.navCtrl.push("MensagemDetalhePage",{'id' : id});
   }
 
 }
