@@ -95,5 +95,10 @@ export class MensagemPage {
       this.msg = err.message;
     })
   }
+  
+  detalhe(id : string){
+    console.log(id);
+    this.navCtrl.push("MensagemDetalhePage",{'id' : id});
+  }
 
 }
