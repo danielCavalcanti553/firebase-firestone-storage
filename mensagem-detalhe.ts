@@ -37,6 +37,13 @@ export class MensagemDetalhePage {
     console.log("ID PAGE "+this.navParams.get('id'));
   }
 
-
+  excluir(){
+    firebase.firestore().collection("mensagem").doc(this.navParams.get('id'))
+      .delete().then(()=> {
+        this.navCtrl.setRoot("MensagemPage");
+    }).catch(error => {
+        console.error("Error ao remover document: ", error.message);
+    });
+  }
 
 }
