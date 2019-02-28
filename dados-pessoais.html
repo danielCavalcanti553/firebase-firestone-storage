@@ -1,0 +1,23 @@
+
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>DadosPessoais</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+<p *ngFor="let d of dadosPessoais">
+  {{d.endereco}}<br />
+  {{d.telefones?.celular || "Sem telefone"}}
+  {{d.telefones?.telefone1 || "Sem telefone"}}
+  {{d.telefones?.telefone2 || "Sem telefone"}}
+  {{d?.plano || "Sem plano"}}
+
+</p>
+
+<button (click)="cadastrar()">Cadastrar</button>
+</ion-content>
